@@ -1,0 +1,137 @@
+<html>
+    <head>
+
+        <link rel="stylesheet" href="https://fonts.google.com/specimen/Roboto">
+        <link rel="stylesheet" href="https://fonts.google.com/specimen/Lora">
+        <link rel="stylesheet" href="https://fonts.google.com/specimen/Big+Shoulders+Text">
+
+        <style>
+
+
+        .chart-container {
+            max-width: 1050px;
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: "Roboto", sans-serif;
+        }
+
+        svg {
+            overflow: visible;
+        }
+
+        .headline {
+            font-family: "Roboto", sans-serif;
+        }
+
+
+        .source {
+            font-family: "Lora", serif;
+        }
+
+        .y .tick line {
+            opacity: .5;
+            stroke-dasharray: 3,3;
+            color: "#4D4D4D";
+        }
+
+        .x .tick line {
+            opacity: .5;
+            color: "#4D4D4D";
+        }
+
+        .x .tick label {
+            font-family: "Lora", serif;
+        }
+
+        .y .tick label {
+            font-family: "Lora", serif;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .x .domain {
+            display: none;
+        }
+        </style>
+    </head>
+    <body>
+        <div class = "chart-container">
+            <h1 class = "headline">
+                HeadlineText
+            </h1>
+            <p1 class = "source">
+                SourceText
+            </p1>
+            <svg width = "1050px" height = "500px"></svg>
+        </div>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <script>
+
+            let dataset = "ethicsnew.csv"
+
+            let width = 1050
+            let height = 500
+
+            let svg = d3.select("body").select("svg")
+
+            let margin = {top: 20, right: 30, bottom: 30, left: 50}
+
+            d3.csv(dataset).then(function (data) {
+                console.log("loaded data")
+
+                data.forEach(d => {
+                    d.category = d.Week // x-var of choice
+                    d.value = +d.number_trained // use y-var of choice here
+                })
+
+                console.log(data)
+
+                let category = data.map(d => d.category) // this is the x-axis variable you want
+
+                let x = d3.scaleBand()
+                    .domain(category)
+                    .range([margin.left, width-margin.right])
+
+                let y = d3.scaleLinear()
+                    .domain([0, d3.max(data.map(d => d.value))]) // this is the y-axis variable you want
+                    .range([height-margin.bottom, margin.top])
+                
+                let yAxisSettings = d3.axisLeft(y)
+                    .tickSize(0 - width)
+                    .tic
+                
+                let xAxisSettings = d3.axisBottom(x)
+                    .ticks(10)
+                    .tickSize(12)
+                
+                let yAxisTicks = svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxisSettings)
+                    .attr("transform", `translate(${margin.left}, 0)`)
+
+                let xAxisTicks = svg.append("g")
+                    .attr("class", "x axis")
+                    .call(xAxisSettings)
+                    .attr("transform", `translate(0, ${height - margin.bottom})`)
+
+                let bars = svg.append("g")
+                    .attr("class", "bars")
+                    .selectAll(".bar")
+                    .data(data)
+                    .join("rect")
+                    .attr("class", "bar")
+                    .attr("x", d => x(d.category)) // this is your x value!
+                    .attr("width", x.bandwidth)
+                    .attr("y", d => y(d.value))
+                    .attr("height", d => y(0) - y(d.value))
+                    .style("fill", "#41B6E6")
+
+
+            })
+        
+        
+        </script>
+    </body>
+</html>
