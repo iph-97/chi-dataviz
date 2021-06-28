@@ -69,7 +69,7 @@
         <script src="https://d3js.org/d3.v6.min.js"></script>
         <script>
 
-            let dataset = "ethicsnew.csv"
+            let dataset = "ethicsnew.csv" // dataset 
 
             let width = 1050
             let height = 500
@@ -88,19 +88,19 @@
 
                 console.log(data)
 
-                let category = data.map(d => d.category) // this is the x-axis variable you want
+                let category = data.map(d => d.category) 
 
                 let x = d3.scaleBand()
                     .domain(category)
                     .range([margin.left, width-margin.right])
+                    .padding(.4)
 
                 let y = d3.scaleLinear()
-                    .domain([0, d3.max(data.map(d => d.value))]) // this is the y-axis variable you want
+                    .domain([0, d3.max(data.map(d => d.value))])
                     .range([height-margin.bottom, margin.top])
                 
                 let yAxisSettings = d3.axisLeft(y)
                     .tickSize(0 - width)
-                    .tic
                 
                 let xAxisSettings = d3.axisBottom(x)
                     .ticks(10)
@@ -126,7 +126,7 @@
                     .attr("width", x.bandwidth)
                     .attr("y", d => y(d.value))
                     .attr("height", d => y(0) - y(d.value))
-                    .style("fill", "#41B6E6")
+                    .style("fill", "#41B6E6") // city blue
 
 
             })
